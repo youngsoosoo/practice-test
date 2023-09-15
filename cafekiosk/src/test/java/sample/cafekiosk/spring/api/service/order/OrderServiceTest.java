@@ -94,7 +94,7 @@ class OrderServiceTest {
             .extracting("productNumber", "quantity")
             .containsExactlyInAnyOrder(
                 tuple("001", 0),
-                tuple("001", 1)
+                tuple("002", 1)
             );
      }
 

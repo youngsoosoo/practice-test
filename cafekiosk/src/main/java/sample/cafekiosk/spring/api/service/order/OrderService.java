@@ -1,6 +1,7 @@
 package sample.cafekiosk.spring.api.service.order;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -44,23 +45,19 @@ public class OrderService {
         // 상품별 counting
         Map<String, Long> productCountingMap = stockProductNumbers.stream()
             .collect(Collectors.groupingBy(p -> p, Collectors.counting()));
-        // 재고 차감 시도
 
-        for (String stockProductNumber : stockProductNumbers) {
+        // 재고 차감 시도
+        for (String stockProductNumber : new HashSet<>(stockProductNumbers)) {
             Stock stock = stockMap.get(stockProductNumber);
             int quantity = productCountingMap.get(stockProductNumber).intValue();
             if(stock.isQuantityLessThan(quantity)){
                 throw new IllegalArgumentException("재고가 부족한 상품이 있습니다.");
             }
-
             stock.deductQuantity(quantity);
-
         }
-
 
         Order order = Order.create(products, registeredDateTime);
         Order savedOrder = orderRepository.save(order);
-
         // Order
         return OrderResponse.of(savedOrder);
     }
